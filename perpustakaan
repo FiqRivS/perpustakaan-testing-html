@@ -1,50 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="css/Style.css">
-    <title>Perpustakaan Online</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perpustakaan Digital</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    nav {
+      background-color: #34495e;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      padding: 20px;
+    }
+    .search-box {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    input[type="button"] {
+      padding: 8px 12px;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .book-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .book {
+      background-color: white;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .book h3 {
+      margin-top: 0;
+    }
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
 
-<div id="container">
-<div class="header"><img src="images/logo.png" width="100" height="100"><h1>Perpustakaan Universitas BSI</h1>
+<header>
+  <h1>Perpustakaan Digital</h1>
+  <p>Temukan buku favoritmu di sini</p>
+</header>
+
+<nav>
+  <a href="#">Beranda</a>
+  <a href="#">Koleksi Buku</a>
+  <a href="#">Tentang</a>
+  <a href="#">Kontak</a>
+</nav>
+
+<div class="container">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Cari buku berdasarkan judul atau penulis...">
+    <input type="button" value="Cari" onclick="cariBuku()">
+  </div>
+
+  <h2>Daftar Buku</h2>
+  <div class="book-list" id="bookList">
+    <!-- Buku akan dimunculkan di sini oleh JavaScript -->
+  </div>
 </div>
 
-<div class="main">
-<div class="left">
-<h3 align="center">MENU</h3>
-<ul>
-<li><a href="http://localhost/perpus/login.php">Login</a></li>
-<li><a href="#">Home</a></li>
-<li><a href="#">Daftar Buku</a></li>
-</ul>
-</div>
+<footer>
+  <p>&copy; 2025 Perpustakaan Digital. Semua hak dilindungi.</p>
+</footer>
 
-<div class="middle">
-<h3 align="center">Artikel/Berita/Buku Terbaru</h3>
-<h2 align="center">Buku: Rahvayana - Aku Lala Padamu</h2><br>
-<div align="center">
-<img src="images/rahvayana.jpg" width="240" >
-</div>
-<p><a href="#">Baca Selengkapnya >></a></p>
-</div>
+<script>
+  // Data buku
+  const buku = [
+    {
+      judul: "Atomic Habits",
+      penulis: "James Clear",
+      tahun: "2018",
+      deskripsi: "Buku tentang perubahan kebiasaan kecil untuk hasil besar."
+    },
+    {
+      judul: "Laut Bercerita",
+      penulis: "Leila S. Chudori",
+      tahun: "2017",
+      deskripsi: "Novel berlatar sejarah kelam Indonesia."
+    },
+    {
+      judul: "Filosofi Teras",
+      penulis: "Henry Manampiring",
+      tahun: "2018",
+      deskripsi: "Buku pengantar filsafat Stoikisme yang praktis."
+    },
+    {
+      judul: "Negeri 5 Menara",
+      penulis: "Ahmad Fuadi",
+      tahun: "2009",
+      deskripsi: "Kisah inspiratif santri yang bermimpi besar."
+    }
+  ];
 
-<div class="right">
-<h3 align="center">BUKU TERPOPULER</h3>
-<ul>
-<li><a href="#">Web Design</a></li>
-<li><a href="#">Pemrograman</a></li>
-<li><a href="#">Database</a></li>
-</ul>
-</div>
-</div>
-</div>
+  // Tampilkan semua buku saat pertama kali
+  window.onload = tampilkanBuku;
 
-<div class="footer"><p align="center">Copyright © 2018 - Belajar CSS Responsive</a></p>
-</div>
-</div>
+  function tampilkanBuku(filter = "") {
+    const list = document.getElementById("bookList");
+    list.innerHTML = "";
+
+    const hasil = buku.filter(b => {
+      const teks = (b.judul + " " + b.penulis).toLowerCase();
+      return teks.includes(filter.toLowerCase());
+    });
+
+    if (hasil.length === 0) {
+      list.innerHTML = "<p>Tidak ditemukan buku dengan kata kunci tersebut.</p>";
+      return;
+    }
+
+    hasil.forEach(b => {
+      const div = document.createElement("div");
+      div.className = "book";
+      div.innerHTML = `
+        <h3>${b.judul}</h3>
+        <p><strong>Penulis:</strong> ${b.penulis}</p>
+        <p><strong>Tahun:</strong> ${b.tahun}</p>
+        <p>${b.deskripsi}</p>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function cariBuku() {
+    const input = document.getElementById("searchInput").value;
+    tampilkanBuku(input);
+  }
+</script>
+
 </body>
 </html>
